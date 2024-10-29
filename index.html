@@ -4,481 +4,85 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Avalanche 2024</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/TweenMax.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Orbitron', sans-serif;
-        }
-
         body {
             overflow: hidden;
-            background: radial-gradient(circle, rgba(46,125,39,1) 0%, rgba(2,0,36,1) 50%, rgba(1,28,34,1) 100%);
-            color: #fff;
-            min-height: 100vh;
-            position: relative;
-        }
-
-        .parent {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        canvas {
-            max-width: 100%;
-            height: auto;
-        }
-
-        .countdown {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            font-size: clamp(16px, 4vw, 24px);
-            background: rgba(0, 0, 0, 0.5);
-            padding: 10px;
-            border-radius: 5px;
-            z-index: 1000;
-        }
-
-        .coming-soon {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: clamp(24px, 6vw, 44px);
-            text-align: center;
-            white-space: nowrap;
-            z-index: 1000;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        footer {
-            background: rgba(0, 0, 0, 0.8);
-            color: #fff;
-            padding: 1rem;
-            text-align: center;
-            width: 100%;
-            position: fixed;
-            bottom: 0;
-            font-size: clamp(12px, 3vw, 16px);
-        }
-
-        @media (max-width: 768px) {
-            .countdown {
-                top: auto;
-                bottom: 80px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 90%;
-                text-align: center;
-            }
-        }
-
-        .loading {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 20px;
-            border-radius: 10px;
-            z-index: 2000;
-        }
-
-        .dg.ac {
-            display: none !important;
         }
     </style>
 </head>
-<body>
-    <div id="loading" class="loading">Loading 3D Model...</div>
-    <div class="parent">
-        <div class="countdown"></div>
-        <div class="coming-soon"></div>
-        <footer>
+<body class="h-screen bg-gradient-to-br from-gray-100 to-blue-100">
+    <div class="h-screen flex flex-col justify-between px-4 py-2">
+        <!-- Robot Animation Container -->
+        <div class="flex-1 max-h-[50vh] md:max-h-[60vh] flex items-center justify-center">
+            <div id="robotAnimation" class="w-full h-full max-w-4xl"></div>
+        </div>
+
+        <!-- Coming Soon Animation Container -->
+        <div class="flex-1 max-h-[35vh] md:max-h-[30vh] flex items-center justify-center">
+            <div id="comingSoonAnimation" class="w-full h-full max-w-3xl"></div>
+        </div>
+
+        <!-- Copyright Text -->
+        <div class="text-center text-gray-700 text-m py-2">
             © 2024 Tech Team KLS GIT. All rights reserved.
-        </footer>
+        </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
-    <script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/loaders/ColladaLoader.js"></script>
-
     <script>
-        class Robot {
-            constructor() {
-                this.windowWidth = window.innerWidth;
-                this.windowHeight = window.innerHeight;
+        // Robot Animation
+        const robotAnimation = lottie.loadAnimation({
+            container: document.getElementById('robotAnimation'),
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: 'https://lottie.host/96f1e5bc-07d1-49f0-bb5e-aff9708b156d/JKOX2e4L7J.json'
+        });
 
-                this.animation = {
-                    flyingHeight: 2,
-                    flyingFreq: 0.015,
-                    eyeAmplitude: 2,
-                    eyelidAmplitude: 1,
-                    modelsAmplitude: 0.3,
-                    reactionTime: 0.100,
-                    speed: 0.5,
-                    eyelidsOpening: 0,
-                    flying: true
-                };
+        // Coming Soon Animation
+        const comingSoonAnimation = lottie.loadAnimation({
+            container: document.getElementById('comingSoonAnimation'),
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: 'https://lottie.host/61aeb0ec-9142-419e-b048-82490461ea4c/qMMKxi1qvX.json'
+        });
 
-                this.onWindowResize = this.onWindowResize.bind(this);
-                this.onMouseMove = this.onMouseMove.bind(this);
-                this.render = this.render.bind(this);
-
-                window.addEventListener('resize', this.onWindowResize);
-                window.addEventListener('mousemove', this.onMouseMove);
-
-                this.init();
-            }
-
-            init() {
-                this.scene = new THREE.Scene();
-                this.mouse = new THREE.Vector2(window.innerWidth, window.innerWidth);
-
-                this.newRenderer();
-                this.newCamera();
-                this.newLight();
-                this.newGround();
-                this.newRobot();
-                this.render();
-            }
-
-            newRenderer() {
-                this.renderer = new THREE.WebGLRenderer({ 
-                    alpha: true, 
-                    antialias: true,
-                    powerPreference: "high-performance"
-                });
-                this.renderer.setPixelRatio(window.devicePixelRatio);
-                this.renderer.setSize(this.windowWidth, this.windowHeight);
-                document.body.appendChild(this.renderer.domElement);
-            }
-
-            newCamera() {
-                const aspect = this.windowWidth / this.windowHeight;
-                const fieldOfView = 45;
-                const near = 0.1;
-                const far = 1000;
-                this.camera = new THREE.PerspectiveCamera(fieldOfView, aspect, near, far);
-                this.camera.position.set(0, 1, 27);
-            }
-
-            newLight() {
-                const ambientLight = new THREE.AmbientLight(0xe9e9e9, 1);
-                ambientLight.position.set(0, 100, 0);
-                this.scene.add(ambientLight);
-
-                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.1);
-                directionalLight.position.set(0, 100, 20);
-                directionalLight.castShadow = true;
-                directionalLight.shadow.mapSize.width = 2048;
-                directionalLight.shadow.mapSize.height = 2048;
-                this.scene.add(directionalLight);
-            }
-
-            newGround() {
-                const countdownElement = document.querySelector('.countdown');
-                const comingSoonElement = document.querySelector('.coming-soon');
-
-                const updateCountdown = () => {
-                    const endDate = new Date('2024-11-10T00:00:00');
-                    const now = new Date();
-                    const remainingTime = endDate - now;
-
-                    if (remainingTime <= 0) {
-                        countdownElement.innerHTML = 'Event Started!';
-                        return;
-                    }
-
-                    const days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
-
-                    countdownElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-                };
-
-                const typeWriter = (text, element, delay) => {
-                    let index = 0;
-                    element.innerHTML = '';
-                    const interval = setInterval(() => {
-                        if (index < text.length) {
-                            element.innerHTML += text.charAt(index);
-                            index++;
-                        } else {
-                            clearInterval(interval);
-                        }
-                    }, delay);
-                };
-
-                setTimeout(() => {
-                    typeWriter('Coming Soon....', comingSoonElement, 100);
-                }, 500);
-
-                updateCountdown();
-                setInterval(updateCountdown, 1000);
-            }
-
-            newRobot() {
-                const url = {
-                    object: 'https://cdn.rawgit.com/Verlangieri/robot-animation/master/app/obj/boule.DAE',
-                    texture1: 'https://cdn.rawgit.com/Verlangieri/robot-animation/master/app/obj/face.jpg',
-                    texture2: 'https://cdn.rawgit.com/Verlangieri/robot-animation/master/app/obj/texture.jpg'
-                };
-
-                const loader = new THREE.ColladaLoader();
-                loader.load(url.object, collada => {
-                    this.dataTexture = [url.texture1, url.texture2];
-                    this.textureLoader(this.dataTexture.length);
-
-                    this.models = collada.scene;
-                    this.models.rotation.y = THREE.Math.degToRad(-90);
-
-                    this.mesh = new THREE.Object3D();
-                    this.box = new THREE.Box3().setFromObject(this.models);
-                    this.box.center(this.models.position);
-                    this.models.position.multiplyScalar(-1);
-
-                    this.mesh.add(this.models);
-                    this.scene.add(this.mesh);
-
-                    this.eye = this.models.getObjectByName("Eye", true);
-                    this.eyelidTop = this.models.getObjectByName("Eyelid-top", true);
-                    this.eyelidBottom = this.models.getObjectByName("Eyelid-bottom", true);
-                    this.eyelidTop.rotation.x = THREE.Math.degToRad(-88);
-                    this.eyelidBottom.rotation.x = THREE.Math.degToRad(-85);
-
-                    const lens = this.models.getObjectByName("Lens", true);
-                    lens.material.map = this.textureLoader.loader.load(this.dataTexture[0], 
-                        this.textureLoader.textureLoaded.bind(this.textureLoader));
-                    lens.material.map.minFilter = THREE.LinearFilter;
-
-                    const pointLight = new THREE.PointLight(0xffffff, 0.5, 1);
-                    pointLight.position.z = 30;
-                    lens.add(pointLight);
-
-                    const tl = new TimelineMax({ repeat: -1, yoyo: true });
-                    tl.from(pointLight, 1, { intensity: 5 });
-
-                    this.body = this.models.getObjectByName("Body", true);
-                    this.body.children[0].material.map = this.textureLoader.loader.load(
-                        this.dataTexture[1], 
-                        this.textureLoader.textureLoaded.bind(this.textureLoader)
-                    );
-                    this.body.children[0].material.map.minFilter = THREE.LinearFilter;
-                    this.body.children[3].castShadow = true;
-                    this.camera.lookAt(this.models.position);
-
-                    this.parameters = {
-                        lunchIntro: true,
-                        introComplete: false,
-                        coef: 0,
-                        height: this.models.position.y
-                    };
-
-                    const loadingElement = document.getElementById('loading');
-                    if (loadingElement) {
-                        TweenMax.to(loadingElement, 0.5, { opacity: 0, onComplete: () => {
-                            loadingElement.remove();
-                        }});
-                    }
-                });
-            }
-
-            textureLoader(numberOfTextures) {
-                this.textureLoader = {
-                    loader: new THREE.TextureLoader(),
-                    total: numberOfTextures,
-                    loaded: 0,
-                    loadedComplete: false,
-                    textureLoaded() {
-                        this.loaded++;
-                        if (this.loaded == this.total) {
-                            this.loadedComplete = true;
-                        }
-                    }
-                };
-            }
-
-            introAnimation() {
-                const delayTurnOff = 1000;
-                const delayTurnOn = 3000;
-                TweenMax.set(this.mesh.position, { y: 15 });
-                TweenMax.set(this.mesh.rotation, { 
-                    y: THREE.Math.degToRad(720), 
-                    z: THREE.Math.degToRad(720) 
-                });
-                setTimeout(() => this.turnOffAnimation(), delayTurnOff);
-                setTimeout(() => this.turnOnAnimation(), delayTurnOn);
-            }
-
-            turnOffAnimation() {
-                TweenMax.to(this.mesh.position, 1.5, { 
-                    y: (this.ground ? this.ground.position.y : 0) + this.box.max.y / 2, 
-                    ease: Bounce.easeOut 
-                });
-                TweenMax.to(this.mesh.rotation, 2, {
-                    x: THREE.Math.degToRad(getRandom(-20, 0)),
-                    y: THREE.Math.degToRad(getRandom(-30, 30)),
-                    z: THREE.Math.degToRad(getRandom(-20, 20)),
-                    ease: Power2.easeOut
-                });
-            }
-
-            turnOnAnimation() {
-                TweenMax.to(this.mesh.position, 1.5, { 
-                    y: this.animation.flyingHeight, 
-                    ease: Power2.easeOut 
-                });
-                TweenMax.to(this.mesh.rotation, 1, { 
-                    x: 0, y: 0, z: 0, 
-                    ease: Power2.easeOut 
-                });
-                TweenMax.to(this.eyelidTop.rotation, 0.5, { 
-                    x: THREE.Math.degToRad(-75), 
-                    ease: Power2.easeOut 
-                }, 1.5);
-                TweenMax.to(this.eyelidBottom.rotation, 0.5, { 
-                    x: THREE.Math.degToRad(-100), 
-                    ease: Power2.easeOut,
-                    onStart: () => {
-                        this.parameters.introComplete = true;
-                    }
-                }, 1.5);
-            }
-
-            flyingAnimation() {
-                this.parameters.coef += this.animation.flyingFreq;
-                const c = Math.sin(Math.PI * this.parameters.coef);
-                this.eye.position.y = this.animation.eyeAmplitude * c;
-                this.models.position.y = c *this.animation.modelsAmplitude + this.parameters.height;
-                this.eyelidTop.position.y = this.eyelidBottom.position.y = this.animation.eyelidAmplitude * c;
-            }
-
-            standbyAnimation(state) {
-                if (!state) {
-                    this.turnOffAnimation();
-                    TweenMax.to(this.models.position, 0.5, { y: this.parameters.height });
-                } else if (state) {
-                    this.turnOnAnimation();
-                }
-            }
-
-            mouseAnimation() {
-                // Scale mouse movement based on screen size
-                const scaleX = window.innerWidth < 768 ? 1.5 : 1;
-                const scaleY = window.innerWidth < 768 ? 1.5 : 1;
-
-                TweenMax.to(this.eye.rotation, this.animation.speed, { 
-                    x: (this.mouse.y / 5) * scaleY, 
-                    y: (this.mouse.x / 3) * scaleX, 
-                    delay: this.animation.reactionTime 
-                });
-
-                TweenMax.to(this.mesh.rotation, this.animation.speed, { 
-                    y: (this.mouse.x / 2) * scaleX, 
-                    x: -(this.mouse.y / 5) * scaleY, 
-                    delay: this.animation.reactionTime 
-                });
-
-                TweenMax.to(this.eyelidTop.rotation, this.animation.speed, { 
-                    y: (this.mouse.x / 4) * scaleX, 
-                    x: THREE.Math.degToRad(-75 + this.animation.eyelidsOpening) + 
-                       ((this.mouse.y - Math.abs(this.mouse.x)) / 10) * scaleY, 
-                    delay: this.animation.reactionTime 
-                });
-
-                TweenMax.to(this.eyelidBottom.rotation, this.animation.speed, { 
-                    y: (this.mouse.x / 4) * scaleX, 
-                    x: THREE.Math.degToRad(-100 - this.animation.eyelidsOpening) + 
-                       ((this.mouse.y + Math.abs(this.mouse.x)) / 10) * scaleY, 
-                    delay: this.animation.reactionTime 
-                });
-            }
-
-            updateRobot() {
-                if (this.models !== undefined && this.textureLoader.loadedComplete === true) {
-                    if (this.parameters.lunchIntro) {
-                        this.introAnimation();
-                        this.parameters.lunchIntro = false;
-                    }
-                    if (this.parameters.introComplete && this.animation.flying) {
-                        this.flyingAnimation();
-                    }
-                }
-            }
-
-            mouseUpdate() {
-                if (this.parameters.introComplete) {
-                    this.mouseAnimation();
-                }
-            }
-
-            onMouseMove(event) {
-                // Handle touch events for mobile
-                const x = event.touches ? event.touches[0].clientX : event.clientX;
-                const y = event.touches ? event.touches[0].clientY : event.clientY;
-                
-                this.mouse.x = (x / window.innerWidth) * 2 - 1;
-                this.mouse.y = -(y / window.innerHeight) * 2 + 1;
-                this.mouseUpdate();
-            }
-
-            onWindowResize() {
-                this.windowWidth = window.innerWidth;
-                this.windowHeight = window.innerHeight;
-                
-                // Update camera
-                this.camera.aspect = this.windowWidth / this.windowHeight;
-                this.camera.updateProjectionMatrix();
-                
-                // Update renderer
-                this.renderer.setSize(this.windowWidth, this.windowHeight);
-                
-                // Adjust camera position based on screen size
-                if (window.innerWidth < 768) {
-                    this.camera.position.z = 35; // Move camera back on mobile
-                } else {
-                    this.camera.position.z = 27; // Default position
-                }
-            }
-
-            render() {
-                this.updateRobot();
-                this.renderer.render(this.scene, this.camera);
-                requestAnimationFrame(this.render);
-            }
+        // Error handling
+        function handleAnimationError(error) {
+            console.error('Error loading animation:', error);
+            const fallbackText = document.createElement('div');
+            fallbackText.className = 'text-center text-gray-400 py-8';
+            fallbackText.textContent = 'Animation could not be loaded';
+            error.currentTarget.container.appendChild(fallbackText);
         }
 
-        const getRandom = (min, max) => Math.random() * (max - min + 1) + min;
+        robotAnimation.addEventListener('error', handleAnimationError);
+        comingSoonAnimation.addEventListener('error', handleAnimationError);
 
-        // Add touch event listeners for mobile devices
-        document.addEventListener('touchstart', event => {
-            event.preventDefault();
-            window.robot.onMouseMove(event);
-        }, { passive: false });
+        // Optimize animations
+        [robotAnimation, comingSoonAnimation].forEach(anim => {
+            anim.setQuality('medium');
+        });
 
-        document.addEventListener('touchmove', event => {
-            event.preventDefault();
-            window.robot.onMouseMove(event);
-        }, { passive: false });
+        // Intersection Observer for performance
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach(entry => {
+                    const anim = entry.target.id === 'robotAnimation' ? robotAnimation : comingSoonAnimation;
+                    if (entry.isIntersecting) {
+                        anim.play();
+                    } else {
+                        anim.pause();
+                    }
+                });
+            },
+            { threshold: 0.1 }
+        );
 
-        // Initialize robot when window loads
-        window.onload = () => {
-            window.robot = new Robot();
-        };
+        observer.observe(document.getElementById('robotAnimation'));
+        observer.observe(document.getElementById('comingSoonAnimation'));
     </script>
 </body>
 </html>
