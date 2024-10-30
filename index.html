@@ -6,13 +6,92 @@
     <title>Avalanche 2024</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            overflow: hidden;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        .profile-card{
+            position: relative;
+            width: 180px;
+            height: 180px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 50%;
+            box-shadow: 0 0 22px #3336;
+            transition: .6s;
+            margin: 0 15px;
+        }
+        
+        .profile-card:hover{
+            border-radius: 10px;
+            height: 230px;
+        }
+        
+        .profile-card .img{
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: .6s;
+            z-index: 99;
+        }
+        
+        .profile-card:hover .img{
+            transform: translateY(-60px);
+        }
+        
+        .img img{
+            width: 100%;
+            border-radius: 50%;
+            box-shadow: 0 0 22px #3336;
+            transition: .6s;
+        }
+        
+        .profile-card:hover img{
+            border-radius: 10px;
+        }
+        
+        .caption{
+            text-align: center;
+            transform: translateY(-80px);
+            opacity: 0;
+            transition: .6s;
+        }
+        
+        .profile-card:hover .caption{
+            opacity: 1;
+        }
+        
+        .caption h3{
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .caption p{
+            font-weight: 450;
+            font-size: 14px;
+            color: #0c52a1;
+            margin: 2px 0 9px 0;
+        }
+        
+        .caption .social-links a{
+            color: #333;
+            margin: 0 8px;
+            font-size: 18px;
+            transition: .6s;
+        }
+        
+        .social-links a:hover{
+            color: #d213a8;
         }
     </style>
 </head>
-<body class="h-screen bg-gradient-to-br from-gray-100 to-blue-100">
+<body class="h-screen bg-gradient-to-br from-gray-100 to-blue-100" oncontextmenu="return false">
     <div class="h-screen flex flex-col justify-between px-4 py-2">
         <!-- Robot Animation Container -->
         <div class="flex-1 max-h-[50vh] md:max-h-[60vh] flex items-center justify-center">
@@ -24,13 +103,99 @@
             <div id="comingSoonAnimation" class="w-full h-full max-w-3xl"></div>
         </div>
 
+        <!-- Tech Team Members Section -->
+        <div class="text-center space-y-4 py-4 bg-gradient-to-br from-gray-100 to-blue-100 ">
+            <div class="text-gray-600 text-lg font-medium mb-6">Meet Our Tech Team</div>
+            <div class="flex flex-wrap justify-center gap-y-8">
+                <!-- Team Member 1 -->
+                <div class="profile-card">
+                    <div class="img">
+                        <img src="https://media.licdn.com/dms/image/v2/D4D03AQEHkrHQy3Emwg/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1715696852290?e=1735776000&v=beta&t=7E-MYSrpUQ3rArtoZLsaJ6u2iqD32wb6JYb95N30UO0" alt="Team Member 1">
+                    </div>
+                    <div class="caption">
+                        <h3>Avinash Pauskar</h3>
+                        <p>Student Council</p>
+                        <div class="social-links">
+                            <a href="https://instagram.com/avinashh.5/" target="_blank"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Member 2 -->
+                <div class="profile-card">
+                    <div class="img">
+                        <img src="https://media.licdn.com/dms/image/v2/D5603AQFzgmLfwH1jvg/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1704341115201?e=1735776000&v=beta&t=jxi_D2AhcHTSxgnraJ6cNoaXWcOlmMXOv14U15ce2I4" alt="Team Member 2">
+                    </div>
+                    <div class="caption">
+                        <h3>Ganesh Kugaji</h3>
+                        <p>Student Coordinator</p>
+                        <div class="social-links">
+                            <a href="https://instagram.com/kugajiganesh" target="_blank"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Member 3 -->
+                <div class="profile-card">
+                    <div class="img">
+                        <img src="https://media.licdn.com/dms/image/v2/D5603AQEnER56cE93eA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1720375471643?e=1735776000&v=beta&t=aQggSbG_Q946hmPwy3mmyQOLHm29vdTq3pzandlbUns" alt="Team Member 3">
+                    </div>
+                    <div class="caption">
+                        <h3>Niraj Vernekar</h3>
+                        <p>Student Coordinator</p>
+                        <div class="social-links">
+                            <a href="https://www.instagram.com/nirajvernekar02?igsh=aGk1dHhhM3ZrcTds"target="_blank" ><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Member 4 -->
+                <div class="profile-card">
+                    <div class="img">
+                        <img src="https://media.licdn.com/dms/image/v2/D4D03AQGJHnDBtPG-Wg/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1690536679219?e=1735776000&v=beta&t=xAKDHKvDwtXuv2fo4pvD5MGD66T2bqNnZVOeQYJkU0k" alt="Team Member 4">
+                    </div>
+                    <div class="caption">
+                        <h3>Ganesh Margale</h3>
+                        <p>Student Coordinator</p>
+                        <div class="social-links">
+                            <a href="https://instagram.com/ganesh_026/" target="_blank"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-card">
+                    <div class="img">
+                        <img src="https://media.licdn.com/dms/image/v2/D5603AQEGBSYapxkyTA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1715485207486?e=1735776000&v=beta&t=jglRbBDQcYbyHcl6dviVl9fAL88Yt8qWdXkkAtVdea8" alt="Team Member 4">
+                    </div>
+                    <div class="caption">
+                        <h3>Manoj Patil</h3>
+                        <p>Student Coordinator</p>
+                        <div class="social-links">
+                            <a href="https://www.instagram.com/mpaantoijl/" target="_blank"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Copyright Text -->
-        <div class="text-center text-gray-400 text-sm py-2">
+        <div class="text-center text-gray-500 text-sm py-2">
             © 2024 Tech Team KLS GIT. All rights reserved.
         </div>
     </div>
 
     <script>
+        // Disable keyboard shortcuts and inspect
+        document.addEventListener('keydown', function(e) {
+            if (
+                e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+                (e.ctrlKey && e.key === 'u')
+            ) {
+                e.preventDefault();
+            }
+        });
+
         // Robot Animation
         const robotAnimation = lottie.loadAnimation({
             container: document.getElementById('robotAnimation'),
